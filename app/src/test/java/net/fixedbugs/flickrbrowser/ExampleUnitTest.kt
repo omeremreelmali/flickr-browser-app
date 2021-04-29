@@ -1,4 +1,4 @@
-package com.example.flickrapp
+package net.fixedbugs.flickrbrowser
 
 import org.junit.Test
 
