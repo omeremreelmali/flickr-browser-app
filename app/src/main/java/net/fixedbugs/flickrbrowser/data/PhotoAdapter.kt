@@ -23,11 +23,13 @@ class PhotoAdapter(var photolist : List<Photo>) : RecyclerView.Adapter<PhotoView
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val photo= photolist[position]
         Log.d("MainAc",photolist.toString())
-        Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(holder.photoImageView)
-        holder.photoTitle.text= photo.title
+
+        Picasso.get().load(photo.media.m).into(holder.photoImageView)
+        holder.photoTitle.text=photo.title
     }
 
     override fun getItemCount(): Int {
+        Log.d("MainAc",photolist.size.toString())
         return photolist.size
     }
 }
