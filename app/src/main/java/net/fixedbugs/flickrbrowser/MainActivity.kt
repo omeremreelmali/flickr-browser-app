@@ -1,19 +1,52 @@
 package net.fixedbugs.flickrbrowser
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.JsonObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import net.fixedbugs.flickrbrowser.data.*
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        var photoListAdapter= PhotoAdapter(ArrayList())
+        var photoRecyclerView: RecyclerView = findViewById(R.id.recycler_view)
+
+        CoroutineScope(Dispatchers.Main).launch {
+
+           val response = FlickerApi.getClient()
+                .create(FlickrApiService::class.java)
+                .listPhoto("cars","json","1")
+
+            if (response.isSuccessful) {
+
+                val photoList= ArrayList<Photo>()
+                response.body()!!.items?.map { photoList.add(Photo(it.title,it.media)) }
+
+                photoListAdapter = PhotoAdapter(photoList)
+                photoRecyclerView.adapter=photoListAdapter
+
+
+            } else {
+                Toast.makeText(applicationContext,"Hatalı işlem", Toast.LENGTH_LONG).show()
+            }
+        }
         
     }
 
