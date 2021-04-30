@@ -28,6 +28,11 @@ class PhotoAdapter(var photolist : List<Photo>) : RecyclerView.Adapter<PhotoView
         return PhotoViewHolder(view)
     }
 
+    fun loadNewPhotos(newPhotos: List<Photo>){
+        photolist= ArrayList<Photo>()
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val photo= photolist[position]
         Picasso.get().load(photo.media.m).into(holder.photoImageView)

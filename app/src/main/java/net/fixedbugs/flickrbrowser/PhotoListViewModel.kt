@@ -27,7 +27,8 @@ class PhotoListViewModel : ViewModel() {
     }
 
     fun getPhotos(searckey : String){
-
+        _photos.value= ArrayList<Photo>()
+        
         CoroutineScope(Dispatchers.Main).launch {
             val response = FlickerApi.getClient()
                     .create(FlickrApiService::class.java)
@@ -41,5 +42,7 @@ class PhotoListViewModel : ViewModel() {
             }
         }
     }
+
+
 
 }
