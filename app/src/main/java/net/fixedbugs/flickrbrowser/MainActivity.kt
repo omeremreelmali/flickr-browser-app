@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,33 +22,20 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
+    private  val photoListViewModel: PhotoListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-
         val photoRecyclerView: RecyclerView = findViewById(R.id.recycler_view)
-
-        CoroutineScope(Dispatchers.Main).launch {
-
-           val response = FlickerApi.getClient()
-                .create(FlickrApiService::class.java)
-                .listPhoto("cars","json","1")
-
-            if (response.isSuccessful) {
-
-                val photoList= ArrayList<Photo>()
-                response.body()!!.items?.map { photoList.add(Photo(it.title,it.media)) }
-                val photoListAdapter = PhotoAdapter(photoList)
-                photoRecyclerView.adapter=photoListAdapter
-                photoRecyclerView.layoutManager =  GridLayoutManager(applicationContext, 1)
-
-            } else {
-                Toast.makeText(applicationContext,"Hatalı işlem", Toast.LENGTH_LONG).show()
-            }
+        photoListViewModel.photos.observe(this){
+            val photoListAdapter = PhotoAdapter(it)
+            photoRecyclerView.adapter=photoListAdapter
+            photoRecyclerView.layoutManager =  GridLayoutManager(applicationContext, 1)
         }
+
 
 
 
@@ -64,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.app_bar_search -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
