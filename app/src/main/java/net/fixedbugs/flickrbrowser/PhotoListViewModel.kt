@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
@@ -28,8 +29,8 @@ class PhotoListViewModel : ViewModel() {
 
     fun getPhotos(searckey : String){
         _photos.value= ArrayList<Photo>()
-        
-        CoroutineScope(Dispatchers.Main).launch {
+
+        viewModelScope.launch {
             val response = FlickerApi.getClient()
                     .create(FlickrApiService::class.java)
                     .listPhoto(searckey,"json","1")
