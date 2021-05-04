@@ -18,8 +18,8 @@ import net.fixedbugs.flickrbrowser.data.PhotoAdapter
 
 class PhotoListViewModel : ViewModel() {
 
-    private val _photos = MutableLiveData<MutableList<Photo>>()
-    val photos : LiveData<MutableList<Photo>> = _photos
+    private val _photos = MutableLiveData<List<Photo>>()
+    val photos : MutableLiveData<List<Photo>> = _photos
 
 
     init{
@@ -30,6 +30,7 @@ class PhotoListViewModel : ViewModel() {
     fun getPhotos(searckey : String){
         _photos.value= ArrayList<Photo>()
 
+        val photoList= ArrayList<Photo>()
         viewModelScope.launch {
             val response = FlickerApi.getClient()
                     .create(FlickrApiService::class.java)
@@ -37,10 +38,10 @@ class PhotoListViewModel : ViewModel() {
 
             if (response.isSuccessful) {
                 response.body()!!.items?.map {
-                    _photos.value?.add(Photo(it.title,it.media,it.author))
-                    _photos.value=photos.value
+                   photoList?.add(Photo(it.title,it.media,it.author))
                 }
             }
+            _photos.value= photoList.toList()
         }
     }
 
